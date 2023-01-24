@@ -12,6 +12,33 @@ namespace ClinicServiceV2.Services
         {
             _context = context;
         }
+        public override Task<GetClientByIdResponse> GetClientById(GetClientByIdRequest request, ServerCallContext context)
+        {
+            try
+            {
+                var client = _context.Clients.SingleOrDefault(c => c.Id == request.ClientId);
+                if (client != null) 
+                {
+                    ClientResponse response = new ClientResponse
+                    {
+                        ClientId = client.Id,
+                        Document = client.Document,
+                        Surname = client.Surname,
+                        Firstname = client.Firstname,
+                        Patronymic = client.Patronymic
+                    };
+                    return Task.FromResult(new GetClientByIdResponse { Client = response, ErrCode = 0, ErrMessage = "" });
+                }
+                else
+                {
+                    return Task.FromResult(new GetClientByIdResponse { ErrCode = 1003, ErrMessage = "No client with this Id" });
+                }
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(new GetClientByIdResponse { ErrCode = 1003, ErrMessage = "internal server error" + e.Message });
+            }
+        }
         public override Task<CreateClientResponse> CreateClient(CreateClientRequest request, ServerCallContext context)
         {
             try

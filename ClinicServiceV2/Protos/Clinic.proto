@@ -17,11 +17,11 @@ service ClinicService{
 	// Delete client
 	rpc DeleteClient (DeleteClientRequest) returns (DeleteClientResponse);
 	// Get client by identification number
-	rpc GetClientById (GetClientByIdRequest) returns (ClientResponse){
+	rpc GetClientById (GetClientByIdRequest) returns (GetClientByIdResponse)
+	{
 		option (google.api.http) = {
 			post: "/api/clientById",
-			body: "*",
-			response_body: "Client"
+			body: "*"
 		};
 	}
 	// Get all clients
