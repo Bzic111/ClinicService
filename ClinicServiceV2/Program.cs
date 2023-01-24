@@ -41,6 +41,10 @@ namespace ClinicServiceV2
             {
                 c.SwaggerDoc("v1",
                     new OpenApiInfo { Title = "gRPC transcoding", Version = "v1" });
+
+                var filePath = Path.Combine(System.AppContext.BaseDirectory, "ClinicServiceV2.xml");
+                c.IncludeXmlComments(filePath);
+                c.IncludeGrpcXmlComments(filePath, includeControllerXmlComments: true);
             });
 
             // Add services to the container.
@@ -49,15 +53,17 @@ namespace ClinicServiceV2
 
             var app = builder.Build();
 
-            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+                });
+            }
 
             app.UseRouting();
             app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
-            app.UseSwagger();
-            app.UseSwaggerUI(c =>
-            {
-                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-            });
             app.MapGrpcService<ClinicServiceV2.Services.ClinicService>().EnableGrpcWeb();
             app.Map("/", () => "Communication with gRPC endpoints must be through a gRPC client.");
 

@@ -3,20 +3,43 @@ syntax = "proto3";
 option csharp_namespace = "ClinicServiceNamespace";
 
 import "google/protobuf/wrappers.proto";
+import "google/api/annotations.proto";
 
+package proto;
+
+
+// Zoo-Clinic Service
 service ClinicService{
-	
+	// Add new client
 	rpc CreateClient (CreateClientRequest) returns (CreateClientResponse);
+	// Update existing client data
 	rpc UpdateClient (UpdateClientRequest) returns (UpdateClientResponse);
+	// Delete client
 	rpc DeleteClient (DeleteClientRequest) returns (DeleteClientResponse);
-	rpc GetClientById (GetClientByIdRequest) returns (ClientResponse);
-	rpc GetAllClients (GetAllClientsRequest) returns (GetAllClientsResponse);
+	// Get client by identification number
+	rpc GetClientById (GetClientByIdRequest) returns (ClientResponse){
+		option (google.api.http) = {
+			post: "/api/clientById",
+			body: "*",
+			response_body: "Client"
+		};
+	}
+	// Get all clients
+	rpc GetAllClients (GetAllClientsRequest) returns (GetAllClientsResponse){
+		option (google.api.http) = {
+			get: "/api/clients"
+		};
+	}
 }
-
+// Parameters for requesting client from db
 message CreateClientRequest{
+	// Document	
 	string document = 1;
+	// Client surname
 	string surname = 2;
+	// Client firstname
 	string firstname = 3;
+	// Client patronymic
 	string patronymic = 4;
 }
 message CreateClientResponse{
