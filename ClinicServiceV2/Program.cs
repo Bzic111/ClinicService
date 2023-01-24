@@ -26,8 +26,8 @@ namespace ClinicServiceV2
             });
 
             // Configure gRPC
-
             builder.Services.AddGrpc().AddJsonTranscoding();
+
 
             // DBContext
             builder.Services.AddDbContext<ClinicServiceDbContext>(options =>
@@ -44,9 +44,11 @@ namespace ClinicServiceV2
 
             // Configure the HTTP request pipeline.
 
-            app.UseAuthorization();
+            app.UseRouting();
+            app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
 
-            
+            app.MapGrpcService<ClinicServiceV2.Services.ClinicService>().EnableGrpcWeb();
+            app.Map("/", () => "Communication with gRPC endpoints must be through a gRPC client.");
 
             app.Run();
         }
