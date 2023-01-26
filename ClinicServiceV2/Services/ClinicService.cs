@@ -3,6 +3,8 @@ using ClinicServiceNamespace;
 using Grpc.Core;
 using static ClinicServiceNamespace.ClinicService;
 
+#pragma warning disable CS1591 // Отсутствует комментарий XML для открытого видимого типа или члена
+
 namespace ClinicServiceV2.Services
 {
     public class ClinicService:ClinicServiceBase

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using System.Net;
 
+#pragma warning disable CS1591 // Отсутствует комментарий XML для открытого видимого типа или члена
 namespace ClinicServiceV2
 {
     public class Program
