@@ -12,6 +12,57 @@ namespace ClinicServiceV2.Services
         {
             _context = context;
         }
+
+        public override Task<DeleteClientResponse> DeleteClient(DeleteClientRequest request, ServerCallContext context)
+        {
+            try
+            {
+                var client = _context.Clients.SingleOrDefault(c => c.Id == request.ClientId);
+                if (client != null)
+                {
+                    _context.Clients.Remove(client);
+                    _context.SaveChanges();
+                    return Task.FromResult(new DeleteClientResponse { ErrCode = 1000, ErrMessage = "Seccessful" });
+                }
+                else
+                {
+                    return Task.FromResult(new DeleteClientResponse { ErrCode = 1004, ErrMessage = "No client with this Id" });
+                }
+            }
+            catch (Exception e)
+            {
+                return Task.FromResult(new DeleteClientResponse { ErrCode = 1006, ErrMessage = "Internal server error 1006" + e.Message });
+            }
+        }
+        public override Task<UpdateClientResponse> UpdateClient(UpdateClientRequest request, ServerCallContext context)
+        {
+            UpdateClientResponse response= new UpdateClientResponse();
+            try
+            {
+                var client = _context.Clients.SingleOrDefault(c => c.Id == request.ClientId);
+                if (client != null)
+                {
+                    client.Document = request.Document;
+                    client.Firstname = request.Firstname;
+                    client.Surname = request.Surname;
+                    client.Patronymic = request.Patronymic;
+                    _context.SaveChanges();
+                    response.ErrCode = 1000;
+                    response.ErrMessage = "Successful";
+                    return Task.FromResult(response);
+                }
+                else
+                {
+                    return Task.FromResult(new UpdateClientResponse { ErrCode = 1004, ErrMessage = "No client with this Id" });
+                }
+            }
+            catch (Exception e)
+            {
+                response.ErrCode = 1005;
+                response.ErrMessage = "Internal server error 1005" + e.Message;
+                return Task.FromResult(response);
+            }
+        }
         public override Task<GetClientByIdResponse> GetClientById(GetClientByIdRequest request, ServerCallContext context)
         {
             try
@@ -31,12 +82,12 @@ namespace ClinicServiceV2.Services
                 }
                 else
                 {
-                    return Task.FromResult(new GetClientByIdResponse { ErrCode = 1003, ErrMessage = "No client with this Id" });
+                    return Task.FromResult(new GetClientByIdResponse { ErrCode = 1004, ErrMessage = "No client with this Id" });
                 }
             }
             catch (Exception e)
             {
-                return Task.FromResult(new GetClientByIdResponse { ErrCode = 1003, ErrMessage = "internal server error" + e.Message });
+                return Task.FromResult(new GetClientByIdResponse { ErrCode = 1003, ErrMessage = "Internal server error 1003" + e.Message });
             }
         }
         public override Task<CreateClientResponse> CreateClient(CreateClientRequest request, ServerCallContext context)
